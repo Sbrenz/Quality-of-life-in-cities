@@ -1,9 +1,5 @@
 # Quality-of-life-in-cities
 
-In questo progetto prodotto con javascript,
-ho creato una web page che contatta un API per trovare informazioni
-riguardo alla qualità della vita delle città.
+In this project produced with javascript, I have created a web page that contacts an API to find information about the quality of life in cities.
 
-Il progetto si sviluppa su una struttura html implementata direttamente 
-da javascript ,
-un listener sul pulsante di submit, e la relativa funzione che contatta l’API e gestisce gli errori.
+The project is developed on an html structure implemented directly by javascript, a listener on the submit button, and the related function that contacts the API and manages errors.

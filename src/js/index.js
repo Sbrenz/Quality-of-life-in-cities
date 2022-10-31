@@ -33,14 +33,14 @@ form.addEventListener("submit", (e) => {
   e.preventDefault();
   summary.innerHTML = "";
   categories.innerHTML = "";
-  fetchData(correctInput(textInput.value));
+  api(correctInput(textInput.value));
 });
 const correctInput = (input) => input.toLowerCase().replace(" ", "-");
 
 
 // TELEPORT API 
 
-const fetchData = async (city) => {
+const api = async (city) => {
   
     const res = await fetch(`https://api.teleport.org/api/urban_areas/slug:${city}/scores/`);
 

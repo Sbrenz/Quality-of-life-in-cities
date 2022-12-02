@@ -14,6 +14,7 @@ mainPage.innerHTML = `
         <input type="text" id="textInput" placeholder="enter the name of a city" required/>
         <button type="submit">search</button>
     </form>
+    <div id="doneBox"></div>
 </div>
 <div id="summary"></div>
 <div id="categories"></div>`;
@@ -25,7 +26,8 @@ const form = document.forms[0];
 const textInput = document.getElementById("textInput");
 const summary = document.getElementById("summary");
 const categories = document.getElementById("categories");
-
+const doneBox = document.getElementById('doneBox');
+doneBox.classList.add('doneBox');
 
 //EVENT ON BUTTON
 
@@ -39,35 +41,39 @@ const correctInput = (input) => input.toLowerCase().replace(" ", "-");
 
 
 // TELEPORT API 
+const handleErrors = (res) => {
+  if (!res.ok) {
+      throw Error(res.statusText);
+  }
+  return res;
+}
 
 const api = async (city) => {
-  
-    const res = await fetch(`https://api.teleport.org/api/urban_areas/slug:${city}/scores/`);
 
-    if (res.status !== 404) {
-      const text = await res.json();
-      const { categories, summary } = text;
+    await fetch(`https://api.teleport.org/api/urban_areas/slug:${city}/scores/`)
+    .then(handleErrors)
+    .then(async(res) => {
+        if (res.status !== 404) {
+            const text = await res.json();
+            const { categories, summary } = text;
+            // DECRIPTION
+            const par = document.getElementById("summary");
+            par.insertAdjacentHTML("afterbegin", summary);
+            // CATEGORIES 
+            categories.forEach((e) => {
+              const el = document.createElement("p");
+              el.textContent = `${e.name}: ${e.score_out_of_10.toFixed(1)}`;
+              document.getElementById("categories").appendChild(el);
+            });
+            return;
+          }}).catch(err => {
+             showError( `${err}, this city is not available.`);
+          }).finally(() => doneBox.innerHTML = "Thanks !");
+    } 
+    
 
-      // DECRIPTION
 
-      const par = document.getElementById("summary");
-      par.insertAdjacentHTML("afterbegin", summary);
-
-      // CATEGORIES 
-
-      categories.forEach((e) => {
-        const el = document.createElement("p");
-        el.textContent = `${e.name}: ${e.score_out_of_10.toFixed(1)}`;
-        document.getElementById("categories").appendChild(el);
-      });
-      return;
-    }else{
-      showError("This city is not available.");
-    }
-};
-
-// ERROR FOR THE LANGUAGE
-
+// ERROR FOR THE LANGUAGE 
 const showError = (errorMessage) => {
   summary.innerHTML = `${errorMessage} Please write in english.`;
   categories.innerHTML = "";
